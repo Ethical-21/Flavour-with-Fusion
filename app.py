@@ -655,7 +655,7 @@ class RecipeGenerator:
 
 def show_welcome():
     show_header_with_logo("Flavour with Fusion")
-    st.markdown('<p class="subtitle">"Fusion that delights , Flavour that Excite." </p>', unsafe_allow_html=True)
+    st.markdown('<p class="subtitle">"Fusion that delights , Flavour that Excites." </p>', unsafe_allow_html=True)
     
     col1, col2 = st.columns(2)
     
