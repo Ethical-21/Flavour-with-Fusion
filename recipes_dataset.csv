@@ -1,0 +1,26 @@
+name,ingredients,cuisine,instructions,cooking_time,difficulty
+Chicken Curry,"chicken,onion,tomato,curry powder,garlic,ginger",Indian,Cut chicken into cubes. Sauté onions and spices. Add chicken and cook. Add tomatoes and simmer.,30,Medium
+Vegetable Stir Fry,"carrot,broccoli,bell pepper,soy sauce,garlic,ginger",Asian,Cut vegetables. Heat oil. Stir fry vegetables. Add sauce and seasonings.,20,Easy
+Beef Tacos,"beef,tortilla,lettuce,tomato,cheese,onion",Mexican,Brown beef. Season with spices. Warm tortillas. Assemble with toppings.,25,Easy
+Greek Salad,"cucumber,tomato,olive,feta cheese,red onion,olive oil",Greek,Chop vegetables. Mix ingredients. Add dressing and toss.,15,Easy
+Mushroom Pasta,"pasta,mushroom,garlic,cream,parmesan,butter",Italian,Cook pasta. Sauté mushrooms. Make cream sauce. Combine all ingredients.,25,Medium
+Butter Chicken,"chicken,butter,cream,tomato,garam masala,fenugreek",Indian,Marinate chicken. Make curry base. Cook chicken. Add cream and butter.,40,Medium
+Vegetable Biryani,"rice,mixed vegetables,biryani masala,onion,ghee,mint",Indian,Cook rice. Prepare vegetables. Layer with spices. Steam until done.,45,Hard
+Pasta Carbonara,"pasta,eggs,bacon,parmesan,black pepper,garlic",Italian,Cook pasta. Prepare sauce. Mix with eggs and cheese. Add bacon.,20,Medium
+Caesar Salad,"romaine lettuce,croutons,parmesan,caesar dressing,chicken",American,Chop lettuce. Make dressing. Combine ingredients. Top with chicken.,15,Easy
+Sushi Roll,"sushi rice,nori,fish,cucumber,avocado,wasabi",Japanese,Prepare rice. Roll with fillings. Cut into pieces. Serve with wasabi.,30,Hard
+Paneer Butter Masala,"paneer,butter,cream,tomato,garam masala,cashew nuts",Indian,Sauté onions and spices. Add tomato puree and cashew paste. Add paneer and cream.,40,Medium
+Aloo Gobi,"potato,cauliflower,onion,ginger,garlic,turmeric",Indian,"Cook potatoes and cauliflower. Sauté with onions, tomatoes, and spices.",30,Easy
+Chana Masala,"chickpeas,tomato,onion,garam masala,ginger,garlic",Indian,"Cook chickpeas. Sauté onions, tomatoes, and spices. Combine and simmer.",35,Medium
+Baingan Bharta,"eggplant,tomato,onion,garlic,ginger,spices",Indian,"Roast eggplant. Mash and sauté with onions, tomatoes, and spices.",40,Medium
+Palak Paneer,"paneer,spinach,cream,garlic,ginger,spices",Indian,Blanch spinach. Make a paste. Cook with spices. Add paneer and cream.,45,Medium
+Dal Tadka,"yellow lentils,garlic,cumin,onion,red chili,cilantro",Indian,"Cook lentils. Temper with garlic, cumin, and chili. Garnish with cilantro.",30,Easy
+Rajma Chawal,"kidney beans,rice,onion,ginger,garlic,spices",Indian,Cook kidney beans. Make a curry base. Serve with rice.,50,Medium
+Vegetable Pulao,"rice,mixed vegetables,onion,garam masala,ghee,mint",Indian,Cook rice. Prepare vegetables. Sauté with spices and steam.,35,Medium
+Masoor Dal,"red lentils,onion,tomato,cumin,garlic,spices",Indian,"Cook lentils. Add tempered spices with onion, garlic, and cumin.",30,Easy
+Kadhi Pakora,"yogurt,besan (gram flour),pakoras,onion,ginger,spices",Indian,Prepare yogurt mixture. Add fried pakoras. Temper with spices and serve.,40,Medium
+Stuffed Capsicum,"bell pepper,potato,cheese,spices,onion,cilantro",Indian,Stuff peppers with filling. Bake or sauté until cooked.,35,Medium
+Malai Kofta,"paneer,cream,tomato,cashew nuts,garam masala",Indian,Make a curry base with spices and cream. Add koftas and simmer.,45,Medium
+Bhindi Masala,"okra,onion,tomato,ginger,garlic,spices",Indian,"Sauté okra with onions, tomatoes, and spices.",25,Medium
+Vegetable Korma,"mixed vegetables,coconut milk,garam masala,ginger,garlic",Indian,Cook vegetables with spices and coconut milk. Simmer until done.,40,Medium
+Pav Bhaji,"potato,tomato,peas,butter,pav bhaji masala,buns",Indian,Boil vegetables. Mash. Cook with spices and butter. Serve with toasted buns.,30,Medium
