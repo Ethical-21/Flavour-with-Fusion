@@ -7,10 +7,194 @@ from typing import List, Dict, Any
 import json
 from pathlib import Path
 
-# Set page config for wider layout
 st.set_page_config(layout="wide", page_title="Flavour with Fusion", page_icon="🍳")
 
-# Enhanced CSS with custom fonts and improved styling
+GROQ_API_URL = "https://your-sanity-project.api.sanity.io/v2021-10-21/data/query/production"  
+API_TOKEN = "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" 
+
+# [MealPlanner class ]
+class MealPlanner:
+    @staticmethod
+    def get_diet_type(user_data):
+        if user_data["goal"] == "Weight Loss":
+            return "low_carb"
+        elif user_data["goal"] == "Weight Gain":
+            return "high_protein"
+        return "balanced"
+
+    @staticmethod
+    def filter_meals(meals, dietary_restrictions):
+        if "Vegetarian" in dietary_restrictions:
+            return [meal for meal in meals if "vegetarian" in meal["tags"]]
+        return meals
+
+    @staticmethod
+    def generate_meal_plan(user_data):
+        diet_type = MealPlanner.get_diet_type(user_data)
+        meal_plan = {}
+        
+        for i in range(7):
+            day = (datetime.now() + timedelta(days=i)).strftime("%A")
+            day_meals = {}
+            
+            for meal_time in ['breakfast', 'lunch', 'dinner']:
+                available_meals = MEALS[meal_time][diet_type]
+                if user_data["dietary_restrictions"]:
+                    available_meals = MealPlanner.filter_meals(available_meals, user_data["dietary_restrictions"])
+                
+                if available_meals:
+                    meal = random.choice(available_meals)
+                    day_meals[meal_time] = {
+                        "name": meal["name"],
+                        "calories": meal["calories"],
+                        "protein": meal["protein"]
+                    }
+                else:
+                    # Fallback to balanced meals if no meals match the criteria
+                    meal = random.choice(MEALS[meal_time]['balanced'])
+                    day_meals[meal_time] = {
+                        "name": meal["name"],
+                        "calories": meal["calories"],
+                        "protein": meal["protein"]
+                    }
+            
+            meal_plan[day] = day_meals
+        
+        return meal_plan
+def show_meal_planner():
+    st.markdown('<h1 class="main-title">Personalized Meal Planner</h1>', unsafe_allow_html=True)
+    st.markdown('<p class="subtitle">" Ready to Taste Wellness?🥑🎯" </p>', unsafe_allow_html=True)
+    
+    
+    # Create three columns with minimal spacing
+    col1, space1, col2, space2, col3 = st.columns([3, 0.1, 3, 0.1, 3])
+    
+    with col1:
+        st.markdown("""
+            <h3 style="color: #FFFFF; 
+                       font-size: 2rem; 
+                       margin-bottom: 1rem; 
+                       font-family: 'Playfair Display', serif;">
+                Personal Information
+            </h3>
+        """, unsafe_allow_html=True)
+        age = st.number_input("Age", min_value=1, max_value=120, value=25)
+        height = st.number_input("Height (cm)", min_value=100, max_value=250, value=170)
+        weight = st.number_input("Weight (kg)", min_value=30, max_value=300, value=70)
+        gender = st.selectbox("Gender", ["Male", "Female"])
+        activity_level = st.selectbox(
+            "Activity Level",
+            ["Sedentary", "Light", "Moderate", "Very Active"]
+        )
+    
+    with col2:
+        st.markdown("""
+            <h3 style="color: #FFFFF; 
+                       font-size: 2rem; 
+                       margin-bottom: 1rem; 
+                       font-family: 'Playfair Display', serif;">
+                Goals & Preferences
+            </h3>
+        """, unsafe_allow_html=True)
+        goal = st.selectbox("Fitness Goal", ["Weight Loss", "Maintain", "Weight Gain"])
+        dietary_restrictions = st.multiselect(
+            "Dietary Restrictions",
+            ["None", "Vegetarian", "Vegan", "Gluten-free", "Dairy-free"]
+        )
+    
+    with col3:
+        st.markdown("""
+            <h3 style="color: #FFFFF; 
+                       font-size: 2rem; 
+                       margin-bottom: 1rem; 
+                       font-family: 'Playfair Display', serif;">
+                Regional Preferences
+            </h3>
+        """, unsafe_allow_html=True)
+        cuisine_preference = st.multiselect(
+            "Preferred Regional Cuisines",
+            ["Italian", "Indian", "Chinese", "Mexican", "Mediterranean"]
+        )
+        spice_preference = st.select_slider(
+            "Spice Preference",
+            options=["Mild", "Medium", "Very Spicy"]
+        )
+    
+    # Minimal spacing before button
+    st.markdown('<div style="margin: 1.5rem 0;"></div>', unsafe_allow_html=True)
+    
+    # Centered button
+    col1, col2, col3 = st.columns([1, 1, 1])
+    with col2:
+        generate_button = st.button("Generate Meal Plan", use_container_width=True)
+    
+    if generate_button:
+        user_data = {
+            "age": age,
+            "height": height,
+            "weight": weight,
+            "gender": gender,
+            "activity_level": activity_level,
+            "goal": goal,
+            "dietary_restrictions": dietary_restrictions,
+            "cuisine_preference": cuisine_preference,
+            "spice_preference": spice_preference
+        }
+        
+        meal_plan = MealPlanner.generate_meal_plan(user_data)
+        
+        # Clean meal plan display
+        st.markdown("""
+            <h2 style="color: #FFFFF; 
+                       font-size: 4rem; 
+                       margin: 2rem 0 1.5rem 0; 
+                       text-align: center;
+                       font-family: 'Playfair Display', serif;">
+                Your Weekly Meal Plan
+            </h2>
+        """, unsafe_allow_html=True)
+        
+        for day, meals in meal_plan.items():
+            st.markdown(f"""
+                <div style="margin: 2.5rem 0;">
+                    <h3 style="color: #FFFFF; 
+                               font-size: 3rem; 
+                               margin-bottom: 0.8rem;
+                               font-family: 'Playfair Display', serif;
+                               border-bottom: 2px solid #4ECDC4;">
+                        {day}
+                    </h3>
+            """, unsafe_allow_html=True)
+            
+            for meal_time, meal_info in meals.items():
+                st.markdown(f"""
+                    <div style="margin: 1rem 0;">
+                        <div style="font-size: 1.6rem; 
+                                    color: #FFFFF; 
+                                    margin-bottom: 0.3rem;
+                                    font-family: 'Poppins', sans-serif;">
+                            <span style="color: #FF6B6B; font-weight: 600;">
+                                {meal_time.title()}:
+                            </span> 
+                            {meal_info['name']}
+                        </div>
+                        <div style="color: #FFFFF; 
+                                    font-size: 1.4rem;
+                                    font-family: 'Montserrat', sans-serif;">
+                            🔥 {meal_info['calories']} kcal  |  💪 {meal_info['protein']}g protein
+                        </div>
+                    </div>
+                """, unsafe_allow_html=True)
+            
+            st.markdown('</div>', unsafe_allow_html=True)
+            
+            # Add subtle separator between days except for the last day
+            if day != list(meal_plan.keys())[-1]:
+                st.markdown("""
+                    <div style="border-bottom: 1px solid #eee; 
+                                margin: 1rem 0;">
+                    </div>
+                """, unsafe_allow_html=True)
 st.markdown("""
     <style>
     /* Import Google Fonts */
@@ -383,8 +567,6 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-
-# [Previous MEALS dictionary remains the same]
 MEALS = {
     'breakfast': {
         'high_protein': [
@@ -483,15 +665,6 @@ def show_header_with_logo(title: str):
     """, unsafe_allow_html=True)
 
 class RecipeGenerator:
-    def __init__(self, use_api: bool = True):
-        self.use_api = use_api
-        self.base_url = "https://www.themealdb.com/api/json/v1/1"
-        
-        if not use_api:
-            try:
-                self.recipes_df = pd.read_csv('recipes_dataset.csv')
-            except FileNotFoundError:
-                self.create_sample_dataset()
     
     def create_sample_dataset(self):
         data = {
@@ -534,7 +707,7 @@ class RecipeGenerator:
             'potato,tomato,peas,butter,pav bhaji masala,buns'
             ],
             'cuisine': [
-            'Indian', 'Asian', 'Mexican', 'Greek', 'Italian',
+            'Indian', 'Indian', 'Mexican', 'Greek', 'Italian',
             'Indian', 'Indian', 'Italian', 'American', 'Japanese',
             'Indian', 'Indian', 'Indian', 'Indian', 'Indian', 'Indian',
             'Indian', 'Indian', 'Indian', 'Indian', 'Indian', 'Indian',
@@ -651,11 +824,20 @@ class RecipeGenerator:
         else:
             recipes = self.search_by_ingredients_local(ingredients)
             return {"recipes": recipes}
+    def __init__(self, use_api: bool = True):
+        self.use_api = use_api
+        self.base_url = "https://www.themealdb.com/api/json/v1/1"
+        
+        if not use_api:
+            try:
+                self.recipes_df = pd.read_csv('recipes_dataset.csv')
+            except FileNotFoundError:
+                self.create_sample_dataset()
 
 
 def show_welcome():
     show_header_with_logo("Flavour with Fusion")
-    st.markdown('<p class="subtitle">"Fusion that delights , Flavour that Excites." </p>', unsafe_allow_html=True)
+    st.markdown('<p class="subtitle">"Fusion that delights , Flavour that Excite." </p>', unsafe_allow_html=True)
     
     col1, col2 = st.columns(2)
     
@@ -749,190 +931,6 @@ def show_recipe_generator():
         - Enter multiple ingredients separated by commas
         - Get detailed instructions and cuisine information
         """)
-
-# [MealPlanner class and show_meal_planner function remain exactly the same]
-class MealPlanner:
-    @staticmethod
-    def get_diet_type(user_data):
-        if user_data["goal"] == "Weight Loss":
-            return "low_carb"
-        elif user_data["goal"] == "Weight Gain":
-            return "high_protein"
-        return "balanced"
-
-    @staticmethod
-    def filter_meals(meals, dietary_restrictions):
-        if "Vegetarian" in dietary_restrictions:
-            return [meal for meal in meals if "vegetarian" in meal["tags"]]
-        return meals
-
-    @staticmethod
-    def generate_meal_plan(user_data):
-        diet_type = MealPlanner.get_diet_type(user_data)
-        meal_plan = {}
-        
-        for i in range(7):
-            day = (datetime.now() + timedelta(days=i)).strftime("%A")
-            day_meals = {}
-            
-            for meal_time in ['breakfast', 'lunch', 'dinner']:
-                available_meals = MEALS[meal_time][diet_type]
-                if user_data["dietary_restrictions"]:
-                    available_meals = MealPlanner.filter_meals(available_meals, user_data["dietary_restrictions"])
-                
-                if available_meals:
-                    meal = random.choice(available_meals)
-                    day_meals[meal_time] = {
-                        "name": meal["name"],
-                        "calories": meal["calories"],
-                        "protein": meal["protein"]
-                    }
-                else:
-                    # Fallback to balanced meals if no meals match the criteria
-                    meal = random.choice(MEALS[meal_time]['balanced'])
-                    day_meals[meal_time] = {
-                        "name": meal["name"],
-                        "calories": meal["calories"],
-                        "protein": meal["protein"]
-                    }
-            
-            meal_plan[day] = day_meals
-        
-        return meal_plan
-def show_meal_planner():
-    st.markdown('<h1 class="main-title">Personalized Meal Planner</h1>', unsafe_allow_html=True)
-    st.markdown('<p class="subtitle">" Ready to Taste Wellness?🥑🎯" </p>', unsafe_allow_html=True)
-    
-    
-    # Create three columns with minimal spacing
-    col1, space1, col2, space2, col3 = st.columns([3, 0.1, 3, 0.1, 3])
-    
-    with col1:
-        st.markdown("""
-            <h3 style="color: #FFFFF; 
-                       font-size: 2rem; 
-                       margin-bottom: 1rem; 
-                       font-family: 'Playfair Display', serif;">
-                Personal Information
-            </h3>
-        """, unsafe_allow_html=True)
-        age = st.number_input("Age", min_value=1, max_value=120, value=25)
-        height = st.number_input("Height (cm)", min_value=100, max_value=250, value=170)
-        weight = st.number_input("Weight (kg)", min_value=30, max_value=300, value=70)
-        gender = st.selectbox("Gender", ["Male", "Female"])
-        activity_level = st.selectbox(
-            "Activity Level",
-            ["Sedentary", "Light", "Moderate", "Very Active"]
-        )
-    
-    with col2:
-        st.markdown("""
-            <h3 style="color: #FFFFF; 
-                       font-size: 2rem; 
-                       margin-bottom: 1rem; 
-                       font-family: 'Playfair Display', serif;">
-                Goals & Preferences
-            </h3>
-        """, unsafe_allow_html=True)
-        goal = st.selectbox("Fitness Goal", ["Weight Loss", "Maintain", "Weight Gain"])
-        dietary_restrictions = st.multiselect(
-            "Dietary Restrictions",
-            ["None", "Vegetarian", "Vegan", "Gluten-free", "Dairy-free"]
-        )
-    
-    with col3:
-        st.markdown("""
-            <h3 style="color: #FFFFF; 
-                       font-size: 2rem; 
-                       margin-bottom: 1rem; 
-                       font-family: 'Playfair Display', serif;">
-                Regional Preferences
-            </h3>
-        """, unsafe_allow_html=True)
-        cuisine_preference = st.multiselect(
-            "Preferred Regional Cuisines",
-            ["Italian", "Indian", "Chinese", "Mexican", "Mediterranean"]
-        )
-        spice_preference = st.select_slider(
-            "Spice Preference",
-            options=["Mild", "Medium", "Very Spicy"]
-        )
-    
-    # Minimal spacing before button
-    st.markdown('<div style="margin: 1.5rem 0;"></div>', unsafe_allow_html=True)
-    
-    # Centered button
-    col1, col2, col3 = st.columns([1, 1, 1])
-    with col2:
-        generate_button = st.button("Generate Meal Plan", use_container_width=True)
-    
-    if generate_button:
-        user_data = {
-            "age": age,
-            "height": height,
-            "weight": weight,
-            "gender": gender,
-            "activity_level": activity_level,
-            "goal": goal,
-            "dietary_restrictions": dietary_restrictions,
-            "cuisine_preference": cuisine_preference,
-            "spice_preference": spice_preference
-        }
-        
-        meal_plan = MealPlanner.generate_meal_plan(user_data)
-        
-        # Clean meal plan display
-        st.markdown("""
-            <h2 style="color: #FFFFF; 
-                       font-size: 4rem; 
-                       margin: 2rem 0 1.5rem 0; 
-                       text-align: center;
-                       font-family: 'Playfair Display', serif;">
-                Your Weekly Meal Plan
-            </h2>
-        """, unsafe_allow_html=True)
-        
-        for day, meals in meal_plan.items():
-            st.markdown(f"""
-                <div style="margin: 2.5rem 0;">
-                    <h3 style="color: #FFFFF; 
-                               font-size: 3rem; 
-                               margin-bottom: 0.8rem;
-                               font-family: 'Playfair Display', serif;
-                               border-bottom: 2px solid #4ECDC4;">
-                        {day}
-                    </h3>
-            """, unsafe_allow_html=True)
-            
-            for meal_time, meal_info in meals.items():
-                st.markdown(f"""
-                    <div style="margin: 1rem 0;">
-                        <div style="font-size: 1.6rem; 
-                                    color: #FFFFF; 
-                                    margin-bottom: 0.3rem;
-                                    font-family: 'Poppins', sans-serif;">
-                            <span style="color: #FF6B6B; font-weight: 600;">
-                                {meal_time.title()}:
-                            </span> 
-                            {meal_info['name']}
-                        </div>
-                        <div style="color: #FFFFF; 
-                                    font-size: 1.4rem;
-                                    font-family: 'Montserrat', sans-serif;">
-                            🔥 {meal_info['calories']} kcal  |  💪 {meal_info['protein']}g protein
-                        </div>
-                    </div>
-                """, unsafe_allow_html=True)
-            
-            st.markdown('</div>', unsafe_allow_html=True)
-            
-            # Add subtle separator between days except for the last day
-            if day != list(meal_plan.keys())[-1]:
-                st.markdown("""
-                    <div style="border-bottom: 1px solid #eee; 
-                                margin: 1rem 0;">
-                    </div>
-                """, unsafe_allow_html=True)
 
 def main():
     # Initialize session state
